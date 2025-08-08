@@ -22,97 +22,117 @@
 
         <!-- <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="showVideo">Open camera</button> -->
 
-        <form id="bundyForm" action="" method="post">
+    <form id="bundyForm" action="clock/" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
+
             <select id="personList" name="person">
                 <option disabled selected>Your name is:</option>
                 {% for person in person_list %}
                 <option value="{{ person.id }}">{{ person.name }}</option>
                 {% endfor %}
-            </select> 
+            </select>
 
             <main class="mdl-layout__content">
                 <!-- <video id="gum-local" content="width=device-width, initial-scale=0.5" autoplay playsinline></video> -->
                 <video id="gum-local" width="500" height="281" autoplay playsinline></video>
             </main>
 
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="timeIN" style="visibility: hidden;">IN</button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="timeIN">IN</button>
 
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="timeOUT" style="visibility: hidden;">OUT</button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="timeOUT">OUT</button>
 
-            <img id="photo" width="500" height="281" alt="Captured photo will appear here" style="display: none;">
+            <div style="border: 1px solid #ccc; width: 500px; height: 280px; position: relative;">
+                <canvas id="videoCanvas" width="500" height="281"></canvas>
+            </div>
         </form>
     </div>
 
     <div id="errorMsg"></div>
 
 <script>
-'use strict';
+var imageCapture;
 
-// Define video constraints
-const videoConstraints = {
-    audio: false,
-    video: {width: 500, height: 280}
-};
+document.querySelector('#personList').addEventListener('change', () => {
+    navigator.mediaDevices.getUserMedia({video: true})
+    .then(mediaStream => {
+        document.querySelector('video').srcObject = mediaStream;
 
-// Add event listener to the button for triggering media stream initialization
-//document.querySelector('#showVideo').addEventListener('click', e => initialize(e));
-//document.querySelector('#errorMsg').addEventListener('onload', e => initialize(e));
-document.querySelector('#personList').addEventListener('click', initialize);
-document.querySelector('#timeIN').addEventListener('click', e => {
-    e.preventDefault();
-    const snapshot = captureSnapshot();
-    if (snapshot) {
-        document.querySelector('#photo').src = URL.createObjectURL(snapshot);
-        document.querySelector('#photo').style.display = 'block';
-        // Optionally, you can submit the form or handle the snapshot as needed
-        document.querySelector('#bundyForm').submit();
-    }
+        const track = mediaStream.getVideoTracks()[0];
+        imageCapture = new ImageCapture(track);
+    })
+    .catch(error => console.log(error));
 });
 
-// Initialization function to request and handle media stream
-async function initialize(e) {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia(videoConstraints);
-        attachVideoStream(stream);
-        //e.target.disabled = true; // Disable the button after successful initialization
-        //document.querySelector("#showVideo").disabled = true;
-        //document.querySelector("#showVideo").style.visibility = "hidden";
-        document.querySelector("#timeIN").style.visibility = "visible";
-        document.querySelector("#timeOUT").style.visibility = "visible";
-    } catch (error) {
-        onCatch(error);
-    }
+document.querySelector('#timeIN').addEventListener('click', () => {
+    const canvas = document.querySelector('#videoCanvas');
+
+    imageCapture.grabFrame()
+    .then(imageBitmap => {    
+        drawCanvas(canvas, imageBitmap);
+    })
+    .catch(error => console.log(error));
+
+    person_id = document.querySelector('#personList').value;
+    filename = person_id + '_in_' + new Date().toISOString().slice(0, 10) + '.png';
+
+    canvas.toBlob(blob => {
+        imageFile = new File([blob], filename, {type: 'image/png'});
+
+        const formData = new FormData(document.querySelector('#bundyForm'));
+        formData.append('image', imageFile);
+        formData.append('action', 'IN');
+        formData.append('person_id', document.querySelector('#personList').value);
+        
+        fetch("http://127.0.0.1:8000/bundy/clock/", {
+            method: "POST",
+            body: formData,
+        });
+    }, 'image/png');
+});
+
+document.querySelector('#timeOUT').addEventListener('click', () => {
+    const canvas = document.querySelector('#videoCanvas');
+
+    imageCapture.grabFrame()
+    .then(imageBitmap => {    
+        drawCanvas(canvas, imageBitmap);
+    })
+    .catch(error => console.log(error));
+
+    person_id = document.querySelector('#personList').value;
+    filename = person_id + '_out_' + new Date().toISOString().slice(0, 10) + '.png';
+
+    canvas.toBlob(blob => {
+        imageFile = new File([blob], filename, {type: 'image/png'});
+
+        const formData = new FormData(document.querySelector('#bundyForm'));
+        formData.append('image', imageFile);
+        formData.append('action', 'OUT');
+        formData.append('person_id', document.querySelector('#personList').value);
+        
+        fetch("http://127.0.0.1:8000/bundy/clock/", {
+            method: "POST",
+            body: formData,
+        });
+    }, 'image/png');
+});
+
+/* Utils */
+
+function drawCanvas(canvas, img) {
+    canvas.width = getComputedStyle(canvas).width.split('px')[0];
+    canvas.height = getComputedStyle(canvas).height.split('px')[0];
+    let ratio  = Math.min(canvas.width / img.width, canvas.height / img.height);
+    let x = (canvas.width - img.width * ratio) / 2;
+    let y = (canvas.height - img.height * ratio) / 2;
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height,
+        x, y, img.width * ratio, img.height * ratio);
 }
 
-// Function to handle successful acquisition of media stream
-function attachVideoStream(stream) {
-    const videoElement = document.querySelector('video');
-    window.stream = stream; // Make variable available to the browser console
-    videoElement.srcObject = stream;
-}
-
-// Function to handle errors during media stream acquisition
-function onCatch(error) {
-    const errorElement = document.querySelector('#errorMsg');
-    errorElement.innerHTML += `<p>Something went wrong: ${error.name}</p>`;
-}
-
-// Capture a snapshot from the video stream
-function captureSnapshot() {
-    let imageCapture;
-
-    navigator.mediaDevices.getUserMedia({ video: true }).then((mediaStream) => {
-    document.querySelector("video").srcObject = mediaStream;
-
-    const track = mediaStream.getVideoTracks()[0];
-    imageCapture = new ImageCapture(track);
-
-    return imageCapture.getPhotoCapabilities();
-    });
-
-    return imageCapture;
-}
+document.querySelector('video').addEventListener('play', function() {
+  document.querySelector('#timeIN').disabled = false;
+});
 </script>
 </body>
 </html>
