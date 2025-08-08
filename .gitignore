@@ -1,1 +1,5 @@
 __pycache__/*
+bundy/__pycache__/*
+vericlock/__pycache__/*
+*.pyc
+*.pyo
