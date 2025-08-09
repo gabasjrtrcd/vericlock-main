@@ -1,3 +1,4 @@
+media/
 media/*
 __pycache__/*
 bundy/__pycache__/*
@@ -61,3 +62,5 @@ vericlock/__pycache__/__init__.cpython-312.pyc
 vericlock/__pycache__/settings.cpython-312.pyc
 vericlock/__pycache__/urls.cpython-312.pyc
 vericlock/__pycache__/wsgi.cpython-312.pyc
+.DS_Store
+db.sqlite3
