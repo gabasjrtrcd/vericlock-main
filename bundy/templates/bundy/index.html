@@ -26,7 +26,7 @@
         {% csrf_token %}
 
             <select id="personList" name="person">
-                <option disabled selected>Your name is:</option>
+                <option disabled selected>And your name is:</option>
                 {% for person in person_list %}
                 <option value="{{ person.id }}">{{ person.name }}</option>
                 {% endfor %}

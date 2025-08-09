@@ -12,9 +12,7 @@ import os
 def index(request):
     person_list = Person.objects.all()
     context = { "person_list": person_list }
-    template = loader.get_template('bundy/index.html')
-    return HttpResponse(template.render(context, request))
-
+    return render(request, 'bundy/index.html', context)
 
 def clock(request):
     context = {}
@@ -24,7 +22,7 @@ def clock(request):
         action = request.POST.get("action")
         image_file = request.FILES.get("image")
 
-        print(person_id, now, action, image_file)
+        print("submit", person_id, now, action, image_file)
 
         if person_id and image_file:
             # Save the uploaded image to MEDIA_ROOT/uploads/
