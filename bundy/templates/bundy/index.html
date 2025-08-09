@@ -33,17 +33,15 @@
             </select>
 
             <main class="mdl-layout__content">
-                <!-- <video id="gum-local" content="width=device-width, initial-scale=0.5" autoplay playsinline></video> -->
-                <video id="gum-local" width="500" height="281" autoplay playsinline></video>
+                <video id="gum-local" width="500" height="500" autoplay playsinline></video>
+
+                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="timeIN">IN</button>
+                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="timeOUT">OUT</button>
+
+                <canvas id="videoCanvas" width="500" height="500"></canvas>
             </main>
 
-            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="timeIN">IN</button>
 
-            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="timeOUT">OUT</button>
-
-            <div style="border: 1px solid #ccc; width: 500px; height: 280px; position: relative;">
-                <canvas id="videoCanvas" width="500" height="281"></canvas>
-            </div>
         </form>
     </div>
 
@@ -75,19 +73,22 @@ document.querySelector('#timeIN').addEventListener('click', () => {
     person_id = document.querySelector('#personList').value;
     filename = person_id + '_in_' + new Date().toISOString().slice(0, 10) + '.png';
 
-    canvas.toBlob(blob => {
-        imageFile = new File([blob], filename, {type: 'image/png'});
+    setTimeout(() => {
+        canvas.toBlob(blob => {
+            imageFile = new File([blob], filename, {type: 'image/png'});
 
-        const formData = new FormData(document.querySelector('#bundyForm'));
-        formData.append('image', imageFile);
-        formData.append('action', 'IN');
-        formData.append('person_id', document.querySelector('#personList').value);
-        
-        fetch("http://127.0.0.1:8000/bundy/clock/", {
-            method: "POST",
-            body: formData,
-        });
-    }, 'image/png');
+            const formData = new FormData(document.querySelector('#bundyForm'));
+            formData.append('image', imageFile);
+            formData.append('action', 'IN');
+            formData.append('person_id', document.querySelector('#personList').value);
+            
+            fetch("http://127.0.0.1:8000/bundy/clock/", {
+                method: "POST",
+                body: formData,
+            });
+            
+        }, 'image/png');
+    }, 2000);
 });
 
 document.querySelector('#timeOUT').addEventListener('click', () => {
@@ -102,19 +103,21 @@ document.querySelector('#timeOUT').addEventListener('click', () => {
     person_id = document.querySelector('#personList').value;
     filename = person_id + '_out_' + new Date().toISOString().slice(0, 10) + '.png';
 
-    canvas.toBlob(blob => {
-        imageFile = new File([blob], filename, {type: 'image/png'});
+    setTimeout(() => {
+        canvas.toBlob(blob => {
+            imageFile = new File([blob], filename, {type: 'image/png'});
 
-        const formData = new FormData(document.querySelector('#bundyForm'));
-        formData.append('image', imageFile);
-        formData.append('action', 'OUT');
-        formData.append('person_id', document.querySelector('#personList').value);
-        
-        fetch("http://127.0.0.1:8000/bundy/clock/", {
-            method: "POST",
-            body: formData,
-        });
-    }, 'image/png');
+            const formData = new FormData(document.querySelector('#bundyForm'));
+            formData.append('image', imageFile);
+            formData.append('action', 'OUT');
+            formData.append('person_id', document.querySelector('#personList').value);
+            
+            fetch("http://127.0.0.1:8000/bundy/clock/", {
+                method: "POST",
+                body: formData,
+            });
+        }, 'image/png')
+    }, 2000);
 });
 
 /* Utils */
@@ -122,7 +125,7 @@ document.querySelector('#timeOUT').addEventListener('click', () => {
 function drawCanvas(canvas, img) {
     canvas.width = getComputedStyle(canvas).width.split('px')[0];
     canvas.height = getComputedStyle(canvas).height.split('px')[0];
-    let ratio  = Math.min(canvas.width / img.width, canvas.height / img.height);
+    let ratio  = Math.max(canvas.width / img.width, canvas.height / img.height);
     let x = (canvas.width - img.width * ratio) / 2;
     let y = (canvas.height - img.height * ratio) / 2;
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
