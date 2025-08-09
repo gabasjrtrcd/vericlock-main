@@ -64,3 +64,4 @@ vericlock/__pycache__/urls.cpython-312.pyc
 vericlock/__pycache__/wsgi.cpython-312.pyc
 .DS_Store
 db.sqlite3
+db.sqlite3
