@@ -22,8 +22,6 @@ def clock(request):
         action = request.POST.get("action")
         image_file = request.FILES.get("image")
 
-        print("submit", person_id, now, action, image_file)
-
         if person_id and image_file:
             # Save the uploaded image to MEDIA_ROOT/uploads/
             upload_path = os.path.join("uploads", image_file.name)
@@ -77,7 +75,7 @@ def sheet(request, year, month, day):
         persons_list.append({
             # 'date': f"{year}-{month:02d}-{day:02d}",
             'name': person.name,
-            'reference': person.image_tag(),
+            'image': person.image_tag(),
             'time_in': time_in_record.time_tag() if time_in_record else None,
             'image_in': time_in_record.image_tag() if time_in_record else "No Image",
             'time_out': time_out_record.time_tag() if time_out_record else None,
@@ -86,6 +84,6 @@ def sheet(request, year, month, day):
 
     # context['persons_list'] = persons_list
     context = {'persons_list': persons_list}
-    print(context)
+
     return render(request, "bundy/sheet.html", context)
     # return HttpResponse(template.render(context, request))

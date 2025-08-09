@@ -7,7 +7,7 @@ from .models import Person, TimeRecord
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
     fields = ['name', 'image', 'location']
-    list_display = ['name', 'image', 'location']
+    list_display = ['name', 'image_tag', 'location']
 
 
 @admin.register(TimeRecord)
