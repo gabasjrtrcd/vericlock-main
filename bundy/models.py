@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.utils.html import mark_safe
 
@@ -38,7 +39,7 @@ class TimeRecord(models.Model):
         return "No Image"
 
     def time_tag(self):
-        return self.time.strftime('%H:%M:%S')
+        return self.time.astimezone().strftime('%H:%M:%S')
 
     def __str__(self):
         return f"{self.person.name} - {self.action} - {self.time.strftime('%Y-%m-%d %H:%M:%S')}"

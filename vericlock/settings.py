@@ -122,5 +122,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_ROOT = '/var/www/vericlock/media'
+#MEDIA_ROOT = '/var/www/vericlock/media'
+MEDIA_ROOT = '/Users/renrengabas/Documents/GitHub/vericlock-main/media'
 MEDIA_URL = '/media/'

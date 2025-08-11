@@ -3,32 +3,48 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  </head> <body>
-    <h1 class="text-3xl font-bold underline">RCD Sheet</h1>
+    <title>Attendance Sheet ( {{ date }} )</title>
+  </head> 
+  <body>
+    <h1 class="text-3xl font-bold underline">Attendance Sheet ({{ date }})</h1>
 
-    {% for person in persons_list %}
-      <div class="grid grid-cols-3 gap-4">
-        <div>
-          <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <img class="rounded-t-lg" src="{{ person.image_url }}" alt="" />
-            <div class="p-5 justify-center">
-                {{ person.name }}
+    <table class="table-auto my-10 mx-10">
+      <thead>
+        <td>Person</td>
+        <td>Clock In</td>
+        <td>Clock Out</td>
+      </thead>
+      <tbody>
+      {% for person in persons_list %}
+        <tr>
+          <td>
+            <div class="my-3 mx-5 max-w-sm bg-white border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+              <div class="w-full content-center size-100px">
+                <img class="h-50 w-50 object-scale-down" src={{ person.image|safe }} />
+              </div>
+              <div class="p-5 justify-center">{{ person.name }}</div>
             </div>
-          </div>
-          <div class="w-full content-center size-100px"></div>
-          <div class="justify-center">{{ person.name }}</div>
-        </div>
-        <div>
-          <div class="w-full content-center size-100px">{{ person.image_in|safe }}</div>
-          <div class="justify-center">{{ person.time_in }}</div>
-        </div>
-        <div>
-          <div class="w-full content-center size-100px">{{ person.image_out|safe }}</div>
-          <div class="justify-center">
-            <div>{{ person.time_out }}</div>
-          </div>
-        </div>
-      </div>
-    {% endfor %}
+          </td>
+          <td>
+            <div class="my-3 mx-5 max-w-sm bg-white border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+              <div class="w-full content-center size-100px">
+                <img class="h-50 w-50 object-scale-down" src={{ person.image_in|safe }} />
+              </div>
+              <div class="p-5 justify-center">{{ person.time_in }}</div>
+            </div>
+          </td>
+          <td>
+            <div class="my-3 mx-5 max-w-sm bg-white border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+              <div class="w-full content-center size-100px">
+                <img class="h-50 w-50 object-scale-down" src={{ person.image_out|safe }} />
+              </div>
+              <div class="p-5 justify-center">{{ person.time_out }}</div>
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
   </body>
 </html>

@@ -12,9 +12,7 @@ import os
 def index(request):
     person_list = Person.objects.all()
     context = { "person_list": person_list }
-    template = loader.get_template('bundy/index.html')
-    return HttpResponse(template.render(context, request))
-
+    return render(request, 'bundy/index.html', context)
 
 def clock(request):
     context = {}
@@ -23,8 +21,6 @@ def clock(request):
         now = datetime.now()
         action = request.POST.get("action")
         image_file = request.FILES.get("image")
-
-        print(person_id, now, action, image_file)
 
         if person_id and image_file:
             # Save the uploaded image to MEDIA_ROOT/uploads/
@@ -55,6 +51,7 @@ def persons(request):
 
 
 def sheet(request, year, month, day):
+    NO_IMAGE = "/media/No_Image_Available.jpg"
     context = {}
     persons = Person.objects.all()
     persons_list = []
@@ -77,17 +74,18 @@ def sheet(request, year, month, day):
         time_out_record = time_out_records_all.last() if time_out_records_all else None
 
         persons_list.append({
-            # 'date': f"{year}-{month:02d}-{day:02d}",
             'name': person.name,
-            'reference': person.image_tag(),
+            'image': person.image_url() if person.image else NO_IMAGE,
             'time_in': time_in_record.time_tag() if time_in_record else None,
-            'image_in': time_in_record.image_tag() if time_in_record else "No Image",
+            'image_in': time_in_record.image_url() if time_in_record else NO_IMAGE,
             'time_out': time_out_record.time_tag() if time_out_record else None,
-            'image_out': time_out_record.image_tag() if time_out_record else "No Image",
+            'image_out': time_out_record.image_url() if time_out_record else NO_IMAGE,
         })
 
-    # context['persons_list'] = persons_list
-    context = {'persons_list': persons_list}
-    print(context)
+    context = {
+        'date': f"{year}-{month:02d}-{day:02d}",
+        'persons_list': persons_list
+    }
+
     return render(request, "bundy/sheet.html", context)
     # return HttpResponse(template.render(context, request))
