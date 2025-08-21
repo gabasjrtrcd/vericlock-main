@@ -15,7 +15,7 @@ class Person(models.Model):
 
     def image_tag(self):
         if self.image:
-            return mark_safe('<img src="%s"/>' % self.image.url)
+            return mark_safe('<img  width="100" height="100" src="%s"/>' % self.image.url)
         return "No Image"
 
     def __str__(self):
@@ -27,6 +27,7 @@ class TimeRecord(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     action = models.CharField(max_length=3, choices=[('IN', 'Clock In'), ('OUT', 'Clock Out')])
     image = models.ImageField(upload_to='time_images/%Y/%m/%d/', null=True, blank=True)
+    verified = models.BooleanField(default=False)
 
     def image_url(self):
         if self.image:
@@ -35,7 +36,7 @@ class TimeRecord(models.Model):
 
     def image_tag(self):
         if self.image:
-            return mark_safe('<img src="%s"/>' % self.image.url)
+            return mark_safe('<img width="100" height="100" src="%s"/>' % self.image.url)
         return "No Image"
 
     def time_tag(self):

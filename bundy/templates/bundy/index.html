@@ -82,13 +82,14 @@ document.querySelector('#timeIN').addEventListener('click', () => {
             formData.append('action', 'IN');
             formData.append('person_id', document.querySelector('#personList').value);
             
-            fetch("http://127.0.0.1:8000/bundy/clock/", {
+            fetch("/bundy/clock/", {
                 method: "POST",
                 body: formData,
             });
-            
         }, 'image/png');
     }, 2000);
+
+    window.location.href('/bundy/check/' + person_id);
 });
 
 document.querySelector('#timeOUT').addEventListener('click', () => {

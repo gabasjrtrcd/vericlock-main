@@ -7,3 +7,4 @@ bundy/migrations/*
 db.sqlite3
 media/*
 vericlock/__pycache__/*
+.gitignore
