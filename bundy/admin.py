@@ -12,7 +12,7 @@ class PersonAdmin(admin.ModelAdmin):
 
 @admin.register(TimeRecord)
 class TimeRecordAdmin(admin.ModelAdmin):
-    fields = ['person', 'action', 'time', 'image_tag']
-    list_display = ['person', 'action', 'time', 'image_tag']
+    fields = ['person', 'action', 'time', 'image_tag', 'verified']
+    list_display = ['person', 'action', 'time', 'image_tag', 'verified']
     readonly_fields = ['person', 'action', 'time', 'image_tag']
 
