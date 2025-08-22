@@ -14,6 +14,55 @@ def index(request):
     context = { "person_list": person_list }
     return render(request, 'bundy/index.html', context)
 
+
+def check(request, person_id):
+    now = datetime.now()
+
+    person = Person.objects.get(id=person_id)
+
+    clock_ins_today = TimeRecord.objects.all().filter(
+        person = person,
+        action = "IN",
+        time__year = now.year,
+        time__month = now.month,
+        time__day = now.day
+    )
+
+    clock_outs_today = TimeRecord.objects.all().filter(
+        person = person,
+        action = "OUT",
+        time__year = now.year,
+        time__month = now.month,
+        time__day = now.day
+    )
+
+    context = {}
+    clock_in_list = []
+    clock_out_list = []
+
+    for time_in_record in clock_ins_today:
+        clock_in_list.append({
+            'time_in': time_in_record.time_tag() if time_in_record else None,
+            'image_in': time_in_record.image_url() if time_in_record else NO_IMAGE,
+        })
+
+    for time_out_record in clock_outs_today:
+        clock_out_list.append({
+            'time_out': time_out_record.time_tag() if time_out_record else None,
+            'image_out': time_out_record.image_url() if time_out_record else NO_IMAGE,
+        })
+
+
+    context = {
+        'person': person.name,
+        'date': f'{now.year}-{now.month:02d}-{now.day:02d}',
+        'clock_in_list': clock_in_list,
+        #clockOut_list: clockOut_list,
+    }
+    print(context)
+    return render(request, 'bundy/check.html', context)
+
+
 def clock(request):
     context = {}
     if request.method == "POST":
@@ -39,6 +88,7 @@ def clock(request):
             context["image_url"] = default_storage.url(file_path)
         else:
             context["error"] = "Please select a person and an image."
+    
     return render(request, 'bundy/clock.html', context)
 
 
