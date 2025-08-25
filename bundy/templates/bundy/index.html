@@ -1,51 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
-    <meta id="theme-color" name="theme-color" content="#ffffff">
-    <title>RCD Time and Attendance</title>
+{% include "../_includes/header.html" %}
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-    <link rel="stylesheet" href="./css/main.css">
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-</head>
-
-<body>
-    <div class="mdl-card mdl-shadow--2dp" style="width: 500px; margin: auto;">
-        <div class="mdl-card__title">
-            <h2 class="mdl-card__title-text">Time and Attendance</h2>
-        </div>
-
-        <div class="mdl-layout__spacer"></div>
-
-        <!-- <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="showVideo">Open camera</button> -->
+<div class="mdl-card mdl-shadow--2dp" style="width: 500px; margin: auto;">
+    <div class="mdl-layout__spacer"></div>
 
     <form id="bundyForm" action="clock/" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
+    {% csrf_token %}
 
-            <select id="personList" name="person">
-                <option disabled selected>And your name is:</option>
-                {% for person in person_list %}
-                <option value="{{ person.id }}">{{ person.name }}</option>
-                {% endfor %}
-            </select>
+        <select id="personList" name="person">
+            <option disabled selected>And your name is:</option>
+            {% for person in person_list %}
+            <option value="{{ person.id }}">{{ person.name }}</option>
+            {% endfor %}
+        </select>
 
-            <main class="mdl-layout__content">
-                <video id="gum-local" width="500" height="500" autoplay playsinline></video>
+        <main class="mdl-layout__content">
+            <video id="gum-local" width="500" height="500" autoplay playsinline></video>
 
-                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="timeIN">IN</button>
-                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="timeOUT">OUT</button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="timeIN">IN</button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="timeOUT">OUT</button>
 
-                <canvas id="videoCanvas" width="500" height="500"></canvas>
-            </main>
+            <canvas id="videoCanvas" width="500" height="500"></canvas>
+        </main>
 
 
-        </form>
-    </div>
+    </form>
+</div>
 
-    <div id="errorMsg"></div>
 
 <script>
 var imageCapture;
@@ -138,5 +118,4 @@ document.querySelector('video').addEventListener('play', function() {
   document.querySelector('#timeIN').disabled = false;
 });
 </script>
-</body>
-</html>
+{% include "../_includes/footer.html" %}
