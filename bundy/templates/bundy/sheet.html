@@ -1,50 +1,76 @@
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <title>Attendance Sheet ( {{ date }} )</title>
-  </head> 
-  <body>
-    <h1 class="text-3xl font-bold underline">Attendance Sheet ({{ date }})</h1>
+{% include "../_includes/header.html" %}
 
-    <table class="table-auto my-10 mx-10">
-      <thead>
-        <td>Person</td>
-        <td>Clock In</td>
-        <td>Clock Out</td>
-      </thead>
-      <tbody>
-      {% for person in persons_list %}
-        <tr>
-          <td>
-            <div class="my-3 mx-5 max-w-sm bg-white border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
-              <div class="w-full content-center size-100px">
-                <img class="h-50 w-50 object-scale-down" src={{ person.image|safe }} />
-              </div>
-              <div class="p-5 justify-center">{{ person.name }}</div>
-            </div>
-          </td>
-          <td>
-            <div class="my-3 mx-5 max-w-sm bg-white border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
-              <div class="w-full content-center size-100px">
-                <img class="h-50 w-50 object-scale-down" src={{ person.image_in|safe }} />
-              </div>
-              <div class="p-5 justify-center">{{ person.time_in }}</div>
-            </div>
-          </td>
-          <td>
-            <div class="my-3 mx-5 max-w-sm bg-white border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
-              <div class="w-full content-center size-100px">
-                <img class="h-50 w-50 object-scale-down" src={{ person.image_out|safe }} />
-              </div>
-              <div class="p-5 justify-center">{{ person.time_out }}</div>
-            </div>
-          </td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
+<body>
+  <!-- Always shows a header, even in smaller screens. -->
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
+      <div class="mdl-layout__header-row">
+        <!-- Title -->
+        <span class="mdl-layout-title">Title</span>
+        <!-- Add spacer, to align navigation to the right -->
+        <div class="mdl-layout-spacer"></div>
+        <!-- Navigation. We hide it in small screens. -->
+        <nav class="mdl-navigation mdl-layout--large-screen-only">
+          <a class="mdl-navigation__link" href="">Link</a>
+          <a class="mdl-navigation__link" href="">Link</a>
+          <a class="mdl-navigation__link" href="">Link</a>
+          <a class="mdl-navigation__link" href="">Link</a>
+        </nav>
+      </div>
+    </header>
+    <div class="mdl-layout__drawer">
+      <span class="mdl-layout-title">Title</span>
+      <nav class="mdl-navigation">
+        <a class="mdl-navigation__link" href="">Link</a>
+        <a class="mdl-navigation__link" href="">Link</a>
+        <a class="mdl-navigation__link" href="">Link</a>
+        <a class="mdl-navigation__link" href="">Link</a>
+      </nav>
+    </div>
+    <main class="mdl-layout__content">
+      <div class="page-content"><!-- Your content goes here --></div>
+    </main>
+  </div>
+  <h1 class="text-3xl font-bold underline">Attendance Sheet ({{ date }})</h1>
 
-  </body>
-</html>
+  <table class="table-auto my-10 mx-10">
+    <thead>
+      <td>Person</td>
+      <td>Clock In</td>
+      <td>Clock Out</td>
+    </thead>
+    <tbody>
+    {% for person in persons_list %}
+      <tr>
+        <td>
+          <div class="my-3 mx-5 max-w-sm bg-white border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <div class="w-full content-center size-100px">
+              <img class="h-50 w-50 object-scale-down" src={{ person.image|safe }} />
+            </div>
+            <div class="p-5 justify-center">{{ person.name }}</div>
+          </div>
+        </td>
+        <td>
+          <div class="my-3 mx-5 max-w-sm bg-white border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <div class="w-full content-center size-100px">
+              <img class="h-50 w-50 object-scale-down" src={{ person.image_in|safe }} />
+            </div>
+            <div class="p-5 justify-center">{{ person.time_in }}</div>
+          </div>
+        </td>
+        <td>
+          <div class="my-3 mx-5 max-w-sm bg-white border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <div class="w-full content-center size-100px">
+              <img class="h-50 w-50 object-scale-down" src={{ person.image_out|safe }} />
+            </div>
+            <div class="p-5 justify-center">{{ person.time_out }}</div>
+          </div>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+</body>
+
+{% include "../_includes/footer.html" %}
